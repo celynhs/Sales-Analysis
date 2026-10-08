@@ -6,6 +6,7 @@ In this project, I conducted data cleaning on the raw datasets then performed sa
 
 
 **Tools:** Python (pandas, NumPy, SciPy, Matplotlib) in Google Colab
+
 **Python Notebook:** [Click Here](./E_commerce_Sales_Analysis.ipynb)
 ---
 
