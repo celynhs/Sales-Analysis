@@ -1,6 +1,9 @@
 # E-commerce Sales Analysis
 
-End-to-end analysis of 50,000 orders from an online electronics retailer (January 2024 – June 2026): data cleaning and validation, revenue performance, product mix, revenue leakage, customer value and discount effectiveness, with business recommendations.
+End-to-end analysis of 50,000 orders from an online electronics retailer between January 2024 – June 2026.
+
+In this project, I conducted data cleaning on the raw datasets then performed sales analysis to answer business questions about revenue performance, product sales, revenue leakage, customer segmentation and discount effectiveness. 
+
 
 **Tools:** Python (pandas, NumPy, SciPy, Matplotlib) in Google Colab
 
@@ -8,23 +11,38 @@ End-to-end analysis of 50,000 orders from an online electronics retailer (Januar
 
 ## Contents
 
-1. [Executive summary](#executive-summary)
-2. [Business questions](#business-questions)
-3. [Dataset](#dataset)
-4. [Data cleaning and validation](#data-cleaning-and-validation)
-5. [Key definitions](#key-definitions)
-6. [Methodology](#methodology)
-7. [Findings](#findings)
-   - [1. Revenue performance](#1-revenue-performance)
-   - [2. Product mix](#2-product-mix)
-   - [3. Revenue leakage](#3-revenue-leakage)
-   - [4. Customer value](#4-customer-value)
-   - [5. Discount effectiveness](#5-discount-effectiveness)
-8. [Recommendations](#recommendations)
-9. [Limitations](#limitations)
-10. [Repository structure](#repository-structure)
+- [E-commerce Sales Analysis](#e-commerce-sales-analysis)
+  - [Contents](#contents)
+  - [Business questions](#business-questions)
+  - [Executive summary](#executive-summary)
+  - [Dataset](#dataset)
+  - [Data cleaning and validation](#data-cleaning-and-validation)
+    - [Issues found and how they were handled](#issues-found-and-how-they-were-handled)
+    - [Data quality findings](#data-quality-findings)
+  - [Key definitions](#key-definitions)
+  - [Methodology](#methodology)
+  - [Findings](#findings)
+    - [1. Revenue performance](#1-revenue-performance)
+    - [2. Product mix](#2-product-mix)
+    - [3. Revenue leakage](#3-revenue-leakage)
+    - [4. Customer value](#4-customer-value)
+    - [5. Discount effectiveness](#5-discount-effectiveness)
+  - [Recommendations](#recommendations)
+  - [Limitations](#limitations)
+  - [Repository structure](#repository-structure)
 
 ---
+
+## Business questions
+
+1. **Revenue performance:** How has revenue changed month by month, and is there a seasonal pattern?
+2. **Product mix:** Which categories and products bring in the most revenue, and which bring in the most orders?
+3. **Revenue leakage:** How much potential revenue is lost through cancellations, returns and payment problems, and where does it come from?
+4. **Customer value:** Who are our buyers, which customers have potential, and who should the business focus on?
+5. **Discount effectiveness:** Do discounts make customers buy more?
+
+---
+
 
 ## Executive summary
 
@@ -37,16 +55,6 @@ End-to-end analysis of 50,000 orders from an online electronics retailer (Januar
 | **Discounts** | 65% of orders are discounted, costing **246K**, but discounts **do not make customers buy more**. |
 
 **Top priorities:** verify the February 2026 drop with the data team, fix order–payment reconciliation, win back high-value customers who have gone quiet, and reduce blanket discounting.
-
----
-
-## Business questions
-
-1. **Revenue performance:** How has revenue changed month by month, and is there a seasonal pattern?
-2. **Product mix:** Which categories and products bring in the most revenue, and which bring in the most orders?
-3. **Revenue leakage:** How much potential revenue is lost through cancellations, returns and payment problems, and where does it come from?
-4. **Customer value:** Who are our buyers, which customers have potential, and who should the business focus on?
-5. **Discount effectiveness:** Do discounts make customers buy more?
 
 ---
 
@@ -69,7 +77,7 @@ Four related tables, joined on `OrderID`, `CustomerID` and `ProductID`:
 
 | Table | Issue | Rows | Action |
 |---|---|---|---|
-| Customers | Missing age | 180 | Grouped as "Unknown" age group |
+| Customers | Missing age | 180 | Created age group column and label null values as "Unknown" |
 | Customers | Missing city | 119 | Labelled "Unknown" |
 | Customers | City spelling variants (`tehran`, `Mashad`) | 110 | Standardised to Tehran and Mashhad |
 | Orders | Exact duplicate rows | 120 | Removed (each appeared twice) |
@@ -123,27 +131,27 @@ Significance level: p < 0.05.
 
 ### 1. Revenue performance
 
-![Monthly realized revenue](images/01_monthly_revenue.png)
+![Monthly realized revenue](images/monthly_realized_revenue.png)
 
 - **Revenue was flat through 2024–2025** at \~105K per month. 2025 revenue was within 0.4% of 2024, with no significant trend (p = 0.79).
 - **From 1 February 2026, revenue fell \~32% overnight and stayed there.**
   - The drop came from fewer orders (−33%) and fewer active customers (−31%); average order value did not change.
-  - Daily orders fell from \~48 to \~33 between January and February 2026 (p < 0.001).
+  - Daily orders fell from \~48 to \~33 between January and February 2026.
   - No category, city, segment or payment method was hit harder than another (no share changed by more than 1 percentage point).
   - A sudden, even drop like this usually points to an external or technical cause, such as a sales channel or data feed that stopped being recorded. **It needs to be confirmed with the data owner before being treated as a real fall in sales.**
 - **Registered customers nearly tripled** (3,653 → 10,000) over 2024–2025, but **monthly active customers stayed flat** at \~1,400 (p = 0.41), so new signups did not turn into more buyers. This is indicative only, given the unreliable signup dates.
 
-![Revenue by calendar month, each year](images/02_revenue_by_calendar_month.png)
+![Revenue by calendar month, each year](images/Revenue_by_month.png)
 
 - **No monthly seasonal pattern:** differences between calendar months are random (p = 0.64), and 2024 and 2025 do not rise and fall in the same months (p = 0.38). There is no peak season to plan stock or campaigns around.
 
-![Average daily revenue by weekday](images/03_revenue_by_weekday.png)
+![Average daily revenue by weekday](images/Revenue_by_weekday.png)
 
 - **Clear weekly pattern:** revenue is 10–13% above average on Saturday and Sunday and lowest mid-week (p < 0.001).
 
 ### 2. Product mix
 
-![Share of orders vs share of revenue by category](images/04_category_orders_vs_revenue.png)
+![Share of orders vs share of revenue by category](images/order_revenue_share.png)
 
 | Category | Share of orders | Share of revenue | Revenue per order |
 |---|---|---|---|
@@ -157,7 +165,7 @@ Significance level: p < 0.05.
 - **Electronics brings in the most revenue.** Accessories has a similar share of orders but only a third as much revenue.
 - **Home Office and Wearables** bring in about **twice their share of orders** in revenue. They are high-value niches with room to grow.
 
-![Orders vs revenue by product](images/05_product_orders_vs_revenue.png)
+![Orders vs revenue by product](images/volume_vs_value_byProduct.png)
 
 *Products above the dashed line bring in more than their share of orders in revenue.*
 
@@ -180,7 +188,7 @@ Significance level: p < 0.05.
 - **Most of the leakage is a records problem, not lost sales.** Over half is money the business may *owe* customers (cancelled or returned orders still marked as paid), which is a customer-trust and possibly legal risk.
 - **The leakage rate is the same everywhere:** 13–15% across payment methods, categories, customer segments, cities and discount levels (no significant differences).
 
-![Monthly revenue leakage rate](images/06_leakage_control_chart.png)
+![Monthly revenue leakage rate](images/monthly_leakage_rate.png)
 
 - **It is stable over time:** no month falls outside the control limits.
 - **Customers are not put off:** customers buy again within 180 days at the same rate after an unsuccessful order as after a successful one (\~64%, p = 0.92).
@@ -192,7 +200,7 @@ Significance level: p < 0.05.
 
 **Who our buyers are:** 9,858 of 10,000 registered customers (98.6%) have bought at least once. They are mostly Regular-labelled (56%), aged 36–65 (61%), and based in Tehran (28%) and Mashhad (13%). A typical buyer placed \~4 orders worth \~300 in total over 2.5 years.
 
-![Average revenue per buyer by profile group](images/07_revenue_per_buyer_by_profile.png)
+![Average revenue per buyer by profile group](images/RevenueperBuyer_byProfile.png)
 
 **Profile does not predict value.** Across segment labels, age groups and cities, there is no significant difference in:
 - buyer rate (share of customers who bought)
@@ -206,7 +214,7 @@ All 15 tests are non-significant after adjustment (adjusted p > 0.1). **The VIP 
 
 **Behaviour does predict value.** Grouping buyers by how recently and how often they buy (RFM) separates them clearly:
 
-![Share of buyers vs share of revenue by behaviour group](images/08_behaviour_groups.png)
+![Share of buyers vs share of revenue by behaviour group](images/order_revenue_share_ByBehaviourGroup.png)
 
 | Behaviour group | Share of buyers | Share of revenue | Profile | Recommended action |
 |---|---|---|---|---|
@@ -238,7 +246,7 @@ Each product has one fixed price, so discounts (0–30%) are the only place wher
 - **Discounted customers do not choose more expensive products** (average product price, order value and share of premium items show no difference, all p > 0.6).
 - **The cost is large:** 65% of orders are discounted, giving away **246K (7.6% of full-price value)**.
 
-![Units per order with and without discount, by product](images/09_discount_units_by_product.png)
+![Units per order with and without discount, by product](images/Discount_vs_NoDiscount.png)
 
 - **No category or product responds to discounts.** Tablet (p = 0.006) and Desk Lamp (p = 0.041) looked significant on their own, but neither is after adjusting for testing 20 products (adjusted p = 0.11 and 0.41). Tablet is worth a controlled test, but its 30%-discount group has only 29 orders, and its revenue per order is no higher than at full price.
 
